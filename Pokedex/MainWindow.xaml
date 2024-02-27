@@ -1,0 +1,23 @@
+﻿<Window x:Class="Pokedex.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Pokedex"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="550" Width="800">
+    <Grid>
+        <TextBox Text="Pokédex" Name="tbName" HorizontalAlignment="Left" Margin="360,25,0,0" VerticalAlignment="Top" FontWeight="Bold" FontSize="18" Width="144"/>
+        <TextBox HorizontalAlignment="Left" Name="tbDescription" Margin="252,64,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Height="133" Width="321"/>
+        <Image HorizontalAlignment="Left" Name="imgPokemon" Height="240" Margin="263,224,0,0" VerticalAlignment="Top" Width="300"/>
+        <TextBlock HorizontalAlignment="Left" Margin="62,236,0,0" TextWrapping="Wrap" Text="Height:" VerticalAlignment="Top"/>
+        <TextBox HorizontalAlignment="Left" Name="tbHeight" Margin="139,236,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="94"/>
+        <TextBlock HorizontalAlignment="Left" Margin="62,269,0,0" TextWrapping="Wrap" Text="Weight:" VerticalAlignment="Top"/>
+        <TextBox HorizontalAlignment="Left" Name="tbWeight" Margin="139,270,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="94"/>
+        <TextBlock HorizontalAlignment="Left" Margin="64,305,0,0" TextWrapping="Wrap" Text="Generation:" VerticalAlignment="Top"></TextBlock>
+        <TextBox HorizontalAlignment="Left" Name="tbGen" Margin="139,305,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="94"/>
+        <Button Content="Ok" HorizontalAlignment="Left" Name="btnOk" Margin="360,478,0,0" VerticalAlignment="Top" Width="106" Click="btnOk_Click"/>
+        <Button Content="Utvecklas till" Name="btnEvolveInto" HorizontalAlignment="Left" Margin="598,380,0,0" VerticalAlignment="Top" Height="49" Width="105" Click="btnEvolveInto_Click"/>
+
+    </Grid>
+</Window>
