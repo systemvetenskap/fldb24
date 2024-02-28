@@ -22,6 +22,40 @@ namespace Pokedex.DAL
            _connectionString = config.GetConnectionString("DefaultConnection");
         }
 
+        public List<VmPokemon> GetAllVmPokemons()
+        {
+            List<VmPokemon> vmPokemons = new List<VmPokemon>();
+
+            using var conn = new NpgsqlConnection(_connectionString);
+            conn.Open();
+            using var command = new NpgsqlCommand();
+
+            StringBuilder sb = new StringBuilder("select p.id, p.name, c.name as color_name ");
+            sb.AppendLine("from pokemon as p ");
+            sb.AppendLine("join color as c on c.id=p.color_id ");
+            sb.AppendLine("order by p.id");
+
+            command.CommandText = sb.ToString();
+            command.Connection = conn;
+
+            using(var reader = command.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    VmPokemon vm = new VmPokemon
+                    {
+                        Id = (int)reader["id"],
+                        Name = reader["name"].ToString(),
+                        Color = reader["color_name"].ToString()
+                    };
+
+                    vmPokemons.Add(vm);
+                }
+            }
+
+            return vmPokemons;
+        }
+
         public async Task<List<int>> GetPokemonIDs()
         {
             List<int> pokemonIds = new List<int>();
@@ -54,6 +88,103 @@ namespace Pokedex.DAL
             }             
 
             return pokemonIds;
+        }
+
+        public async Task<bool> RemovePokemon(Pokemon pokemon)
+        {
+            try
+            {
+                using var conn = new NpgsqlConnection(_connectionString);
+                conn.Open();
+                using var command = new NpgsqlCommand();
+                command.Connection = conn;
+                command.CommandText = $"delete from pokemon where id=@id";
+
+                command.Parameters.AddWithValue("id", pokemon.Id);
+
+                var affectedRows = await command.ExecuteNonQueryAsync();
+
+                if(affectedRows == 0)
+                    return false;
+            }  
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            return true;
+        }
+
+        public async Task<bool> AddPokemon(Pokemon pokemon)
+        {
+            int? colorId = null;
+
+            try
+            {
+                using var conn = new NpgsqlConnection(_connectionString);
+                conn.Open();
+
+                using var command1 = new NpgsqlCommand();
+                command1.Connection = conn;
+                command1.CommandText = $"select id from color where name=@color";
+
+                command1.Parameters.AddWithValue("color", pokemon.Color);
+
+                try
+                {
+                    var task = command1.ExecuteScalarAsync();
+                    colorId = ConvertFromDBVal<int?>(task.Result);
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+
+                using var transaction = await conn.BeginTransactionAsync();
+
+                if(colorId is null)
+                {
+                    command1.CommandText = $"insert into color(name) values(@color) returning id";
+                    command1.Parameters.AddWithValue("color", pokemon.Color);
+
+                    var id = await command1.ExecuteScalarAsync();
+
+                    if(id != null)
+                    {
+                        colorId = (int)id;
+                    }
+                }
+
+                using var command = new NpgsqlCommand();
+
+                command.Connection = conn;
+                command.CommandText = $"insert into pokemon(id,name,weight,height,description,image_url,color_id,generation) values(@id,@name,@weight,@height,@description,@image_url,@color_id,@generation)";
+
+                command.Parameters.AddWithValue("id", pokemon.Id);
+                command.Parameters.AddWithValue("name", pokemon.Name);
+                command.Parameters.AddWithValue("weight", pokemon.Weight);
+                command.Parameters.AddWithValue("height", pokemon.Height);
+                command.Parameters.AddWithValue("generation", pokemon.Generation);
+                command.Parameters.AddWithValue("image_url", pokemon.ImageUrl);
+                command.Parameters.AddWithValue("description", pokemon.Description);
+                command.Parameters.AddWithValue("color_id", colorId);
+
+                try
+                {
+                    await command.ExecuteScalarAsync();
+                    await transaction.CommitAsync();
+                }
+                catch (NpgsqlException ex)
+                {
+                    throw ex;
+                }                
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            return true;
         }
 
         public async Task<Pokemon?> GetPokemon(int id)

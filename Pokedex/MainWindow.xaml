@@ -10,14 +10,26 @@
         <TextBox Text="Pokédex" Name="tbName" HorizontalAlignment="Left" Margin="360,25,0,0" VerticalAlignment="Top" FontWeight="Bold" FontSize="18" Width="144"/>
         <TextBox HorizontalAlignment="Left" Name="tbDescription" Margin="252,64,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Height="133" Width="321"/>
         <Image HorizontalAlignment="Left" Name="imgPokemon" Height="240" Margin="263,224,0,0" VerticalAlignment="Top" Width="300"/>
-        <TextBlock HorizontalAlignment="Left" Margin="62,236,0,0" TextWrapping="Wrap" Text="Height:" VerticalAlignment="Top"/>
-        <TextBox HorizontalAlignment="Left" Name="tbHeight" Margin="139,236,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="94"/>
-        <TextBlock HorizontalAlignment="Left" Margin="62,269,0,0" TextWrapping="Wrap" Text="Weight:" VerticalAlignment="Top"/>
-        <TextBox HorizontalAlignment="Left" Name="tbWeight" Margin="139,270,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="94"/>
-        <TextBlock HorizontalAlignment="Left" Margin="64,305,0,0" TextWrapping="Wrap" Text="Generation:" VerticalAlignment="Top"></TextBlock>
-        <TextBox HorizontalAlignment="Left" Name="tbGen" Margin="139,305,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="94"/>
-        <Button Content="Ok" HorizontalAlignment="Left" Name="btnOk" Margin="360,478,0,0" VerticalAlignment="Top" Width="106" Click="btnOk_Click"/>
-        <Button Content="Utvecklas till" Name="btnEvolveInto" HorizontalAlignment="Left" Margin="598,380,0,0" VerticalAlignment="Top" Height="49" Width="105" Click="btnEvolveInto_Click"/>
+        <TextBlock HorizontalAlignment="Left" Margin="590,110,0,0" TextWrapping="Wrap" Text="Height:" VerticalAlignment="Top"/>
+        <TextBox HorizontalAlignment="Left" Name="tbHeight" Margin="690,110,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="57"/>
+        <TextBlock HorizontalAlignment="Left" Margin="590,143,0,0" TextWrapping="Wrap" Text="Weight:" VerticalAlignment="Top"/>
+        <TextBox HorizontalAlignment="Left" Name="tbWeight" Margin="690,144,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="57"/>
+        <TextBlock HorizontalAlignment="Left" Margin="589,179,0,0" TextWrapping="Wrap" Text="Generation:" VerticalAlignment="Top"></TextBlock>
+        <TextBox HorizontalAlignment="Left" Name="tbGen" Margin="690,179,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="57"/>
+        <Button Content="Slumpa" HorizontalAlignment="Left" Name="btnSlumpa" Margin="360,478,0,0" VerticalAlignment="Top" Width="106" Click="btnSlumpa_Click"/>
+        <Button Content="Utvecklas till" Name="btnEvolveInto" HorizontalAlignment="Left" Margin="609,381,0,0" VerticalAlignment="Top" Height="49" Width="94" Click="btnEvolveInto_Click"/>
+        <TextBlock HorizontalAlignment="Left" Margin="590,75,0,0" TextWrapping="Wrap" Text="Pokedex Number:" VerticalAlignment="Top"/>
+        <TextBlock HorizontalAlignment="Left" Margin="748,113,0,0" TextWrapping="Wrap" Text="m" VerticalAlignment="Top"/>
+        <TextBlock HorizontalAlignment="Left" Margin="748,146,0,0" TextWrapping="Wrap" Text="kg" VerticalAlignment="Top"/>
+        <TextBox HorizontalAlignment="Left" Name="tbPokedexNumber" Margin="690,73,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="57"/>
+        <TextBlock HorizontalAlignment="Left" Name="textblockArrow" Margin="570,392,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="16" FontWeight="Bold"><Run Language="sv-se" Text="---&gt;"/></TextBlock>
+        <TextBox HorizontalAlignment="Left" Name="tbColor" Margin="690,215,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="57"/>
+        <TextBlock HorizontalAlignment="Left" Margin="589,214,0,0" TextWrapping="Wrap" Text="Color:" VerticalAlignment="Top"/>
+        <Button Content="Lägg till ny Pokemon" Name="btnAddPokemon" HorizontalAlignment="Left" Margin="555,478,0,0" VerticalAlignment="Top" Width="163" Click="btnAddPokemon_Click"/>
+        <TextBox HorizontalAlignment="Left" Name="tbImageURL" Margin="690,250,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="57"/>
+        <TextBlock HorizontalAlignment="Left" Margin="589,252,0,0" TextWrapping="Wrap" Text="Image URL:" VerticalAlignment="Top"/>
+        <Button Content="Ta bort" Name="btnDelete" HorizontalAlignment="Left" Margin="690,25,0,0" VerticalAlignment="Top" Width="68" Click="btnDelete_Click"/>
+        <StackPanel Width="150" Name="spMenu" Background="LightGray" Margin="10,10,640,10" />
 
     </Grid>
 </Window>
