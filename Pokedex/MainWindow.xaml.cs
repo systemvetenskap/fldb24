@@ -19,48 +19,21 @@ namespace Pokedex
     /// </summary>
     public partial class MainWindow : Window
     {
-        public MainWindow()
-        {
-            InitializeComponent();
-
-            var vmPokemons = dbRepository.GetAllVmPokemons();
-
-            foreach (var vmPokemon in vmPokemons)
-            {
-                Button newBtn = new Button
-                {
-                    Content = vmPokemon.Name,
-                    Name = $"btn{vmPokemon.Name}",
-                    Tag = vmPokemon
-                };
-
-                newBtn.Click += btnMenuClick;
-
-                spMenu.Children.Add(newBtn);
-
-                // Convert the color string to a Color object
-                Color color;
-                if (ColorConverter.ConvertFromString(vmPokemon.Color) is Color convertedColor)
-                {
-                    color = convertedColor;
-                }
-                else
-                {
-                    // Default color in case of an invalid string
-                    color = Colors.LightGray;
-                }
-
-                // Set the background color
-                newBtn.Background = new SolidColorBrush(color);
-            }
-
-            btnEvolveInto.Visibility = Visibility.Hidden;
-            textblockArrow.Visibility = Visibility.Hidden;
-        }
 
         private dbRepository dbRepository = new dbRepository();
         private Random random = new Random();
         private Pokemon currentPokemon;
+        private string defaultImgUrl = "https://static.wikia.nocookie.net/pokemon-fano/images/6/6f/Poke_Ball.png";
+
+        public MainWindow()
+        {
+            InitializeComponent();
+
+            fillMenuWithPokemonButtons();
+
+            btnEvolveInto.Visibility = Visibility.Hidden;
+            textblockArrow.Visibility = Visibility.Hidden;
+        }
 
         private async void btnMenuClick(object sender, RoutedEventArgs e)
         {
@@ -71,7 +44,40 @@ namespace Pokedex
             if(vmPokemon is VmPokemon)
             {
                 currentPokemon = await dbRepository.GetPokemon(vmPokemon.Id);
-                drawPokemonData(currentPokemon);
+                drawPokemonData();
+            }
+        }
+
+        private void fillMenuWithPokemonButtons()
+        {
+            var vmPokemons = dbRepository.GetAllVmPokemons();
+            spMenu.Children.Clear();
+
+            foreach (var vmPokemon in vmPokemons)
+            {
+                Button newBtn = new Button
+                {
+                    Content = $" #{vmPokemon.Id.ToString("D3")} {vmPokemon.Name}",
+                    Name = $"btn{vmPokemon.Name.Replace(" ", "")}",
+                    Tag = vmPokemon,
+                    HorizontalContentAlignment = HorizontalAlignment.Left,
+                    Width = 130
+                };
+
+                //Add generic click event to button
+                newBtn.Click += btnMenuClick;
+
+                //Try setting the color from the color name found in vmPokemon
+                Color color;
+                if (ColorConverter.ConvertFromString(vmPokemon.Color) is Color convertedColor)
+                    color = convertedColor;
+                else
+                    color = Colors.LightGray;
+                             
+                newBtn.Background = new SolidColorBrush(color);
+
+                // Add the button to the stackpanel
+                spMenu.Children.Add(newBtn);
             }
         }
 
@@ -91,26 +97,27 @@ namespace Pokedex
 
                 if (currentPokemon is Pokemon)
                 {
-                    drawPokemonData(currentPokemon);
+                    drawPokemonData();
                 }
             }
         }
 
 
 
-        private void drawPokemonData(Pokemon pokemon)
+        private void drawPokemonData()
         {
-            tbName.Text = pokemon.Name;
-            tbDescription.Text = pokemon.Description;
-            tbHeight.Text = pokemon.Height.ToString();
-            tbWeight.Text = pokemon.Weight.ToString();
-            tbGen.Text = pokemon.Generation.ToString();
-            tbPokedexNumber.Text = pokemon.Id.ToString();
+            tbName.Text = currentPokemon.Name;
+            tbDescription.Text = currentPokemon.Description;
+            tbHeight.Text = currentPokemon.Height.ToString();
+            tbWeight.Text = currentPokemon.Weight.ToString();
+            tbGen.Text = currentPokemon.Generation.ToString();
+            tbPokedexNumber.Text = currentPokemon.Id.ToString();
+            tbColor.Text = currentPokemon.Color;
 
-            if (pokemon.EvolvesInto is Pokemon)
+            if (currentPokemon.EvolvesInto is Pokemon)
             {
                 btnEvolveInto.Visibility = Visibility.Visible;
-                btnEvolveInto.Content = pokemon.EvolvesInto.Name;
+                btnEvolveInto.Content = currentPokemon.EvolvesInto.Name;
                 textblockArrow.Visibility = Visibility.Visible;
             }
             else
@@ -119,44 +126,49 @@ namespace Pokedex
                 textblockArrow.Visibility = Visibility.Hidden;
             }
 
-            imgPokemon.Source = new BitmapImage(new Uri(pokemon.ImageUrl));
+            if(!string.IsNullOrWhiteSpace(currentPokemon.ImageUrl))
+                imgPokemon.Source = new BitmapImage(new Uri(currentPokemon.ImageUrl));
+            else
+                imgPokemon.Source = new BitmapImage(new Uri(defaultImgUrl));
         }
 
         private void btnEvolveInto_Click(object sender, RoutedEventArgs e)
         {
             currentPokemon = currentPokemon.EvolvesInto;
-            drawPokemonData(currentPokemon);
+            drawPokemonData();
         }
 
         private async void btnAddPokemon_Click(object sender, RoutedEventArgs e)
         {
-            if (double.TryParse(tbHeight.Text, out double dbHeight))
-            {
-                if (int.TryParse(tbPokedexNumber.Text, out int pokemonId))
+            if (double.TryParse(tbHeight.Text, out double dbHeight) &&
+                int.TryParse(tbPokedexNumber.Text, out int pokemonId) &&
+                double.TryParse(tbWeight.Text, out double dbWeight) &&
+                int.TryParse(tbGen.Text, out int intGeneration))
+            {                
+                Pokemon pokemon = new Pokemon
                 {
-                    if (double.TryParse(tbWeight.Text, out double dbWeight))
-                    {
-                        if (int.TryParse(tbGen.Text, out int intGeneration))
-                        {
-                            Pokemon pokemon = new Pokemon
-                            {
-                                Id = pokemonId,
-                                Name = tbName.Text,
-                                Description = tbDescription.Text,
-                                Height = dbHeight,
-                                Weight = dbWeight,
-                                Color = tbColor.Text,
-                                ImageUrl = tbImageURL.Text,
-                                Generation = intGeneration
-                            };
+                    Id = pokemonId,
+                    Name = tbName.Text,
+                    Description = tbDescription.Text,
+                    Height = dbHeight,
+                    Weight = dbWeight,
+                    Color = tbColor.Text.ToLower(),
+                    ImageUrl = tbImageURL.Text,
+                    Generation = intGeneration
+                };
 
-                            bool result = await dbRepository.AddPokemon(pokemon);
-                        }
-                    }
+                bool result = await dbRepository.AddPokemon(pokemon);
+
+                if (result)
+                {
+                    MessageBox.Show($"{pokemon.Name} är nu sparad till databasen.");
+                    currentPokemon = pokemon;
+                    drawPokemonData();
+                    fillMenuWithPokemonButtons();
                 }
-            }
-
-            
+                else
+                    MessageBox.Show($"Det gick inte att spara till databasen.");
+            }            
         }
 
         private async void btnDelete_Click(object sender, RoutedEventArgs e)

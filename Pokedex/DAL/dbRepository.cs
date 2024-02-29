@@ -197,7 +197,7 @@ namespace Pokedex.DAL
             conn.Open();
 
             using var command = new NpgsqlCommand();
-            command.CommandText = $@"select * from pokemon where id=@id";
+            command.CommandText = $@"select p.*,c.name as color_name from pokemon as p join color as c on c.id=p.color_id where p.id=@id";
             command.Connection = conn;
 
             command.Parameters.AddWithValue("id", id);
@@ -214,7 +214,8 @@ namespace Pokedex.DAL
                         Height = (double)reader["height"],
                         Generation = (int)reader["generation"],
                         Description = reader["description"].ToString(),
-                        ImageUrl = reader["image_url"].ToString()                        
+                        ImageUrl = reader["image_url"].ToString(),
+                        Color = reader["color_name"].ToString()
                     };
 
                     evolvesInto = ConvertFromDBVal<int?>(reader["evolves_into_id"]);
