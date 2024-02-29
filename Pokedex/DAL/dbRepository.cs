@@ -115,7 +115,7 @@ namespace Pokedex.DAL
             return true;
         }
 
-        public async Task<bool> AddPokemon(Pokemon pokemon)
+        public async Task AddPokemon(Pokemon pokemon)
         {
             int? colorId = null;
 
@@ -130,15 +130,8 @@ namespace Pokedex.DAL
 
                 command1.Parameters.AddWithValue("color", pokemon.Color);
 
-                try
-                {
-                    var task = command1.ExecuteScalarAsync();
-                    colorId = ConvertFromDBVal<int?>(task.Result);
-                }
-                catch (Exception ex)
-                {
-                    throw ex;
-                }
+                var task = command1.ExecuteScalarAsync();
+                colorId = ConvertFromDBVal<int?>(task.Result);                
 
                 using var transaction = await conn.BeginTransactionAsync();
 
@@ -169,22 +162,18 @@ namespace Pokedex.DAL
                 command.Parameters.AddWithValue("description", pokemon.Description);
                 command.Parameters.AddWithValue("color_id", colorId);
 
-                try
-                {
-                    await command.ExecuteScalarAsync();
-                    await transaction.CommitAsync();
-                }
-                catch (NpgsqlException ex)
-                {
-                    throw ex;
-                }                
+                await command.ExecuteScalarAsync();
+                await transaction.CommitAsync();
+                     
+            }
+            catch (NpgsqlException ex)
+            {
+                throw ex;
             }
             catch (Exception ex)
             {
                 throw ex;
             }
-
-            return true;
         }
 
         public async Task<Pokemon?> GetPokemon(int id)

@@ -140,35 +140,38 @@ namespace Pokedex
 
         private async void btnAddPokemon_Click(object sender, RoutedEventArgs e)
         {
-            if (double.TryParse(tbHeight.Text, out double dbHeight) &&
+            try
+            {
+                if (double.TryParse(tbHeight.Text, out double dbHeight) &&
                 int.TryParse(tbPokedexNumber.Text, out int pokemonId) &&
                 double.TryParse(tbWeight.Text, out double dbWeight) &&
                 int.TryParse(tbGen.Text, out int intGeneration))
-            {                
-                Pokemon pokemon = new Pokemon
                 {
-                    Id = pokemonId,
-                    Name = tbName.Text,
-                    Description = tbDescription.Text,
-                    Height = dbHeight,
-                    Weight = dbWeight,
-                    Color = tbColor.Text.ToLower(),
-                    ImageUrl = tbImageURL.Text,
-                    Generation = intGeneration
-                };
+                    Pokemon pokemon = new Pokemon
+                    {
+                        Id = pokemonId,
+                        Name = tbName.Text,
+                        Description = tbDescription.Text,
+                        Height = dbHeight,
+                        Weight = dbWeight,
+                        Color = tbColor.Text.ToLower(),
+                        ImageUrl = tbImageURL.Text,
+                        Generation = intGeneration
+                    };
 
-                bool result = await dbRepository.AddPokemon(pokemon);
+                    await dbRepository.AddPokemon(pokemon);
 
-                if (result)
-                {
                     MessageBox.Show($"{pokemon.Name} är nu sparad till databasen.");
                     currentPokemon = pokemon;
                     drawPokemonData();
                     fillMenuWithPokemonButtons();
                 }
-                else
-                    MessageBox.Show($"Det gick inte att spara till databasen.");
-            }            
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Kunde inte lägga till din Pokémon i databasen pga: {ex.Message}");
+            }
+                      
         }
 
         private async void btnDelete_Click(object sender, RoutedEventArgs e)
