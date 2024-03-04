@@ -104,12 +104,9 @@ namespace Pokedex
             catch (Exception ex)
             {
                 MessageBox.Show($"Ett fel inträffade: {ex.Message}");
-                throw;
             }
             
         }
-
-
 
         private void drawPokemonData()
         {
@@ -122,6 +119,7 @@ namespace Pokedex
                 tbGen.Text = currentPokemon.Generation.ToString();
                 tbPokedexNumber.Text = currentPokemon.Id.ToString();
                 tbColor.Text = currentPokemon.Color;
+                tbImageURL.Text = currentPokemon.ImageUrl;
 
                 if (currentPokemon.EvolvesInto is Pokemon)
                 {
@@ -142,10 +140,8 @@ namespace Pokedex
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Det uppstod ett fel: {ex.Message}");
-                throw;
-            }
-            
+                MessageBox.Show($"Det uppstod ett fel: {ex.Message}");                
+            }            
         }
 
         private void btnEvolveInto_Click(object sender, RoutedEventArgs e)
@@ -186,8 +182,7 @@ namespace Pokedex
             catch (Exception ex)
             {
                 MessageBox.Show($"Kunde inte lägga till din Pokémon i databasen pga: {ex.Message}");
-            }
-                      
+            }                      
         }
 
         private async void btnDelete_Click(object sender, RoutedEventArgs e)
