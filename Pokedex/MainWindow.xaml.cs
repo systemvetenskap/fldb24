@@ -83,8 +83,6 @@ namespace Pokedex
 
         private async void btnSlumpa_Click(object sender, RoutedEventArgs e)
         {
-            //int randomId = random.Next(1,10);
-
             var pokemonIDs = await dbRepository.GetPokemonIDs();
 
             if (pokemonIDs.Any())
@@ -185,11 +183,15 @@ namespace Pokedex
 
         private async void btnDelete_Click(object sender, RoutedEventArgs e)
         {
-            var result = await dbRepository.RemovePokemon(currentPokemon);
-            if (result == false)
-                MessageBox.Show("Det där gick åt skogen");
-            else
+            try
+            {
+                await dbRepository.RemovePokemon(currentPokemon);
                 MessageBox.Show($"Pokemon {currentPokemon.Name} är nu borta ur databasen.");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Det där gick inte bra, felmeddelande: {ex.Message}");
+            }
         }
     }
 }

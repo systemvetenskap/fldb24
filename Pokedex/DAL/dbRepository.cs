@@ -90,7 +90,7 @@ namespace Pokedex.DAL
             return pokemonIds;
         }
 
-        public async Task<bool> RemovePokemon(Pokemon pokemon)
+        public async Task RemovePokemon(Pokemon pokemon)
         {
             try
             {
@@ -102,17 +102,16 @@ namespace Pokedex.DAL
 
                 command.Parameters.AddWithValue("id", pokemon.Id);
 
-                var affectedRows = await command.ExecuteNonQueryAsync();
-
-                if(affectedRows == 0)
-                    return false;
-            }  
+                await command.ExecuteNonQueryAsync();
+            }
+            catch (NpgsqlException ex)
+            {
+                throw ex;
+            }
             catch (Exception ex)
             {
                 throw ex;
             }
-
-            return true;
         }
 
         public async Task AddPokemon(Pokemon pokemon)
