@@ -102,7 +102,11 @@ namespace Pokedex.DAL
 
                 command.Parameters.AddWithValue("id", pokemon.Id);
 
-                await command.ExecuteNonQueryAsync();
+                int numRowsAffected = await command.ExecuteNonQueryAsync();
+                // I det här specifika exemplet så använder vi ju id för att ta bort en pokémon, vilket är att föredra så att vi
+                // vet att vi tar bort exakt rätt Pokémon. Men man kan ju tänka sig ett scenario där alla med en vikt över 20kg
+                // skall tas bort eller något liknande. I dessa fall kan det vara intressant att se hur många som togs bort,
+                // den informationen får vi tillbaka från databasen och lagrar i integern numRowsAffected.
             }
             catch (NpgsqlException ex)
             {

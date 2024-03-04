@@ -83,21 +83,30 @@ namespace Pokedex
 
         private async void btnSlumpa_Click(object sender, RoutedEventArgs e)
         {
-            var pokemonIDs = await dbRepository.GetPokemonIDs();
-
-            if (pokemonIDs.Any())
+            try
             {
-                int randomIndex = random.Next(1, (int)pokemonIDs.Count);
+                var pokemonIDs = await dbRepository.GetPokemonIDs();
 
-                int randomId = pokemonIDs[randomIndex];
-
-                currentPokemon = await dbRepository.GetPokemon(randomId);
-
-                if (currentPokemon is Pokemon)
+                if (pokemonIDs.Any())
                 {
-                    drawPokemonData();
+                    int randomIndex = random.Next(1, (int)pokemonIDs.Count);
+
+                    int randomId = pokemonIDs[randomIndex];
+
+                    currentPokemon = await dbRepository.GetPokemon(randomId);
+
+                    if (currentPokemon is Pokemon)
+                    {
+                        drawPokemonData();
+                    }
                 }
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ett fel inträffade: {ex.Message}");
+                throw;
+            }
+            
         }
 
 
