@@ -106,30 +106,39 @@ namespace Pokedex
 
         private void drawPokemonData()
         {
-            tbName.Text = currentPokemon.Name;
-            tbDescription.Text = currentPokemon.Description;
-            tbHeight.Text = currentPokemon.Height.ToString();
-            tbWeight.Text = currentPokemon.Weight.ToString();
-            tbGen.Text = currentPokemon.Generation.ToString();
-            tbPokedexNumber.Text = currentPokemon.Id.ToString();
-            tbColor.Text = currentPokemon.Color;
-
-            if (currentPokemon.EvolvesInto is Pokemon)
+            try
             {
-                btnEvolveInto.Visibility = Visibility.Visible;
-                btnEvolveInto.Content = currentPokemon.EvolvesInto.Name;
-                textblockArrow.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                btnEvolveInto.Visibility = Visibility.Hidden;
-                textblockArrow.Visibility = Visibility.Hidden;
-            }
+                tbName.Text = currentPokemon.Name;
+                tbDescription.Text = currentPokemon.Description;
+                tbHeight.Text = currentPokemon.Height.ToString();
+                tbWeight.Text = currentPokemon.Weight.ToString();
+                tbGen.Text = currentPokemon.Generation.ToString();
+                tbPokedexNumber.Text = currentPokemon.Id.ToString();
+                tbColor.Text = currentPokemon.Color;
 
-            if(!string.IsNullOrWhiteSpace(currentPokemon.ImageUrl))
-                imgPokemon.Source = new BitmapImage(new Uri(currentPokemon.ImageUrl));
-            else
-                imgPokemon.Source = new BitmapImage(new Uri(defaultImgUrl));
+                if (currentPokemon.EvolvesInto is Pokemon)
+                {
+                    btnEvolveInto.Visibility = Visibility.Visible;
+                    btnEvolveInto.Content = currentPokemon.EvolvesInto.Name;
+                    textblockArrow.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    btnEvolveInto.Visibility = Visibility.Hidden;
+                    textblockArrow.Visibility = Visibility.Hidden;
+                }
+                
+                if (!string.IsNullOrWhiteSpace(currentPokemon.ImageUrl))
+                    imgPokemon.Source = new BitmapImage(new Uri(currentPokemon.ImageUrl));
+                else
+                    imgPokemon.Source = new BitmapImage(new Uri(defaultImgUrl));
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Det uppstod ett fel: {ex.Message}");
+                throw;
+            }
+            
         }
 
         private void btnEvolveInto_Click(object sender, RoutedEventArgs e)
